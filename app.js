@@ -19,8 +19,34 @@
 
 //****initialize server with 'node app.js' CLI
 var express = require( 'express' );
-var morgan = require('morgan')
-var app = express(); // creates an instance of an express application
+var morgan = require('morgan');
+var nunjucks = require('nunjucks');
+var app = express();
+//views is folder of index.html where nunjucks is located
+nunjucks.configure('views', { noCache: true }); // point nunjucks to the proper 
+							//directory for templates
+app.set('view engine', 'html'); // have res.render work with html 
+								//files
+app.engine('html', nunjucks.render); // when giving html files to 
+							//res.render, tell it to use nunjucks
+var people = [{name: 'Full'}, {name: 'Stacker'}, {name: 'Son'}];
+//res.render( 'index', {title: 'Hall of Fame', people: people} );
+
+
+// var locals = {
+//     title: 'An Example',
+//     people: [
+//         { name: 'Khristen'},
+//         { name: 'Colleen' },
+//         { name: 'Emily'}
+//     ]
+// };
+// nunjucks.render('index.html', locals, function (err, output) {
+//     console.log(output);
+// });
+
+
+ // creates an instance of an express application
 
 //tell your app to listen for requests 
 //on port 3000, and log the message 
@@ -37,6 +63,7 @@ app.listen(3000, function(){
 
 //the all encompassing case
 app.use(morgan('dev')) //developer
+
 // 	function ( request, response, next){
 //console.log('This request\'s method:',request.method,"\\",200) //"\'",	201;); //TERMINAL back end not int he browser
 // 	//request method could be the get or post method
@@ -50,12 +77,18 @@ app.use(morgan('dev')) //developer
 //welcome message when the browser requests the / (or "root") URI
 //WORKS
 
-app.get('/',function(request, response, next){
+app.get('',function(request, response, next){
+	response.render( 'index', {title: 'Hall of Fame', people: people} );
+})
+
+//app.get('/',function(request, response, next){
 	// var statusCode = response.status(200); //code to signla that get was sucessfully
 	// console.log(statusCode);
 	//response.sendStatus();
-	response.send('Welcome to the page');
-})
+	
+	//response.send('Welcome to the page');
+
+//})
 //control c, restart it with 'node app' in CLI
 //network tab in dev tools, you should see a successful (200) status code
 
@@ -100,3 +133,10 @@ app.get('/special/',function(request, response, next){
 
 //curl locolhost/3000/ -X Get -i
 //curl http://localhost/1337/example -X GET -i
+
+
+
+
+
+
+
